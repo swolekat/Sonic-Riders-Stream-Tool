@@ -6,20 +6,13 @@ import { inside, stPath } from "./Globals.mjs";
 import { getJson, saveJson } from "./File System.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
 import { tournament } from "./Tournament.mjs";
-import { round } from "./Round.mjs";
 import { teams } from "./Team/Teams.mjs";
 
 
 class GuiSettings {
 
     #introCheck = document.getElementById("allowIntro");
-    #altArtCheck = document.getElementById("forceAlt");
 
-    #HDCheck = document.getElementById('forceHD');
-    #noLoACheck = document.getElementById('noLoAHD');
-
-    #wsCheck = document.getElementById('workshopToggle');
-    #customRound = document.getElementById('customRound');
     #forceWLCheck = document.getElementById('forceWLToggle');
     #scoreAutoCheck = document.getElementById("scoreAutoUpdate");
     #invertScoreCheck = document.getElementById("invertScore");
@@ -38,21 +31,7 @@ class GuiSettings {
         this.#introCheck.addEventListener("click", () => {
             this.save("allowIntro", this.isIntroChecked())
         });
-        this.#altArtCheck.addEventListener("click", () => {this.toggleAltArt()});
 
-        // vs screen listeners
-        this.#HDCheck.addEventListener("click", () => {this.toggleHD()});
-        this.#noLoACheck.addEventListener("click", () => {this.toggleNoLoA()});
-
-        // gui settings listeners
-        this.#wsCheck.addEventListener("click", () => {
-            if (inside.electron) {
-                this.toggleWs();
-            } else {
-                this.sendWsToggle();
-            }            
-        });
-        this.#customRound.addEventListener("click", () => {this.toggleCustomRound()});
         this.#forceWLCheck.addEventListener("click", () => {this.toggleForceWL()});
         this.#scoreAutoCheck.addEventListener("click", () => {
             this.save("scoreAutoUpdate", this.isScoreAutoChecked())
@@ -94,13 +73,6 @@ class GuiSettings {
 
         // and update it all!
         this.#introCheck.checked = guiSettings.allowIntro;
-        this.#altArtCheck.checked = guiSettings.forceAlt;
-        this.#HDCheck.checked = guiSettings.forceHD;
-        if (guiSettings.forceHD) this.#noLoACheck.disabled = false;
-        this.#noLoACheck.checked = guiSettings.noLoAHD;
-        this.#wsCheck.checked = guiSettings.workshop;
-        if (guiSettings.workshop) this.#altArtCheck.disabled = false;
-        if (guiSettings.customRound) this.#customRound.click();
         if (guiSettings.forceWL) this.#forceWLCheck.click();
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
@@ -143,138 +115,11 @@ class GuiSettings {
         return this.#introCheck.checked;
     }
 
-    setAltArt(value) {
-        this.#altArtCheck.checked = value;
-    }
-    isAltArtChecked() {
-        return this.#altArtCheck.checked;
-    }
-    async toggleAltArt() {
-
-        // to update character images
-        const promises = [];
-        for (let i = 0; i < players.length; i++) {
-            promises.push(players[i].setScImg());
-        }
-
-        // save current checkbox value to the settings file
-        this.save("forceAlt", this.isAltArtChecked());
-
-        await Promise.all(promises);
-
-    }
-
-    setHD(value) {
-        this.#HDCheck.checked = value;
-    }
-    isHDChecked() {
-        return this.#HDCheck.checked;
-    }
-    async toggleHD() {
-
-        // enables or disables the second forceHD option
-        this.#noLoACheck.disabled = !this.isHDChecked();
-        if (this.#noLoACheck.disabled) {
-            this.#noLoACheck.checked = false;
-            await this.save("noLoAHD", false);
-        }
-
-        // to update character images
-        const promises = [];
-        for (let i = 0; i < players.length; i++) {
-            promises.push(players[i].setVsImg());
-            promises.push(players[i].setVsBg());
-            promises.push(players[i].setTrailImage());
-        }
-
-        // save current checkbox value to the settings file
-        await this.save("forceHD", this.isHDChecked());
-
-        await Promise.all(promises);
-
-    }
-
-    setNoLoA(value) {
-        this.#noLoACheck.checked = value;
-    }
-    isNoLoAChecked() {
-        return this.#noLoACheck.checked;
-    }
-    async toggleNoLoA() {
-
-        // to update character images
-        const promises = [];
-        for (let i = 0; i < players.length; i++) {
-            promises.push(players[i].setVsImg());
-            promises.push(players[i].setVsBg());
-            promises.push(players[i].setTrailImage());
-        }
-        await Promise.all(promises);
-
-        // save current checkbox value to the settings file
-        this.save("noLoAHD", this.isNoLoAChecked());
-
-    }
-
-    setWs(value) {
-        this.#wsCheck.checked = value;
-    }
-    isWsChecked() {
-        return this.#wsCheck.checked;
-    }
-    async toggleWs() {
-
-        // set a new character path
-        stPath.char = this.isWsChecked() ? stPath.charWork : stPath.charBase;
-
-        // reload character lists
-        await charFinder.loadCharacters();
-        // clear current character lists
-        for (let i = 0; i < players.length; i++) {
-            await players[i].charChange("Random");
-        }
-
-        // disable or enable alt arts checkbox
-        this.#altArtCheck.disabled = !this.isWsChecked();
-        if (this.#altArtCheck.disabled) {
-            this.#altArtCheck.checked = false;
-            await this.save("forceAlt", false);
-        }
-
-        // save current checkbox value to the settings file
-        await this.save("workshop", this.isWsChecked());
-
-    }
-    /** Will send a signal to the GUI to toggle current WS values */
-    async sendWsToggle() {
-        const remote = await import("./Remote Requests.mjs");
-        remote.sendRemoteData({message: "toggleWs", value: this.isWsChecked()});
-    }
-
     setForceWL(value) {
         this.#forceWLCheck.checked = value;
     }
     isForceWLChecked() {
         return this.#forceWLCheck.checked;
-    }
-
-    setCustomRound(value) {
-        this.#customRound.checked = value;
-    }
-
-    isCustomRoundChecked () {
-        return this.#customRound.checked;
-    }
-
-    toggleCustomRound () {
-        if (this.isCustomRoundChecked()) {
-            round.showTextInput();
-        } else {
-            round.hideTextInput();
-        }
-
-        this.save("customRound", this.isCustomRoundChecked());
-
     }
 
     toggleForceWL() {

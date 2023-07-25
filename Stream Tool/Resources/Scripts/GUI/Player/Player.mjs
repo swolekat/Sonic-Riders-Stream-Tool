@@ -239,10 +239,7 @@ export class Player {
     async getBrowserSrc(char, skin, extraPath, failPath) {
 
         let browserCharPath = "Resources/Characters";
-        if (settings.isWsChecked()) {
-            browserCharPath = "Resources/Characters/_Workshop";
-        }
-        
+
         if (await fileExists(`${stPath.char}/${char}/${extraPath}/${skin.name}.png`) && !skin.force) {
             return browserCharPath + `/${char}/${extraPath}/${skin.name}.png`;
         } else if (await fileExists(`${stPath.char}/${char}/${extraPath}/Default.png`)) {

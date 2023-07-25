@@ -1,7 +1,6 @@
 import { casters } from './Caster/Casters.mjs';
 import { inside, stPath } from './Globals.mjs';
 import { players } from './Player/Players.mjs';
-import { round } from './Round.mjs';
 import { scores } from './Score/Scores.mjs';
 import { teams } from './Team/Teams.mjs';
 import { tournament } from './Tournament.mjs';
@@ -190,7 +189,6 @@ export function saveSimpleTexts() {
     fs.writeFileSync(`${stPath.text}/Simple Texts/Score L.txt`, scores[0].getScore().toString());
     fs.writeFileSync(`${stPath.text}/Simple Texts/Score R.txt`, scores[1].getScore().toString());
 
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Round.txt`, round.getText());
     fs.writeFileSync(`${stPath.text}/Simple Texts/Tournament Name.txt`, tournament.getText());
 
     for (let i = 0; i < casters.length; i++) {

@@ -649,7 +649,7 @@ button:hover {
 }
 
 
-#roundName, #roundNameSelect, #tournamentName {
+#roundName, #tournamentName {
   width: 100%;
   text-align: center;
 }

@@ -4,7 +4,6 @@ import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { players } from "./Player/Players.mjs";
-import { round } from "./Round.mjs";
 import { scores } from "./Score/Scores.mjs";
 import { settings } from "./Settings.mjs";
 import { teams } from "./Team/Teams.mjs";
@@ -27,26 +26,6 @@ export async function updateGUI(data) {
 
     // set the settings
     settings.setIntro(data.allowIntro);
-    if (data.altSkin != settings.isAltArtChecked()) {
-        settings.setAltArt(data.altSkin);
-        await settings.toggleAltArt();
-    }
-    if (data.forceHD != settings.isHDChecked()) {
-        settings.setHD(data.forceHD);
-        await settings.toggleHD();
-    }
-    if (data.noLoAHD != settings.isNoLoAChecked()) {
-        settings.setNoLoA(data.noLoAHD);
-        await settings.toggleNoLoA();
-    }
-    if (data.workshop != settings.isWsChecked()) {
-        settings.setWs(data.workshop);
-        await settings.toggleWs();
-    }
-    if (data.customRound != settings.isCustomRoundChecked()) {
-        settings.setCustomRound(data.customRound);
-        settings.toggleCustomRound();
-    }
     if (data.forceWL != settings.isForceWLChecked()) {
         settings.setForceWL(data.forceWL);
         settings.toggleForceWL();
@@ -83,8 +62,6 @@ export async function updateGUI(data) {
     }
 
     // round info
-    round.setText(data.round, data.roundIndex, data.roundNumber);
-    round.checkGrands();
     wl.setLeft(data.wl[0]);
     wl.setRight(data.wl[1]);
     tournament.setText(data.tournamentName);

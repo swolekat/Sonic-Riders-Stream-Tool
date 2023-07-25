@@ -16,7 +16,7 @@ let numSize = "36px"
 const roundSize = "19px";
 
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
+const pCharPrev = [], scorePrev = [], wlPrev = [], topBarMoved = [];
 let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
@@ -32,7 +32,6 @@ let startup = true;
 //next, global variables for the html elements
 const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
-const colorImg = document.getElementsByClassName("colors");
 const topBars = document.getElementsByClassName("topBarTexts");
 const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
@@ -93,7 +92,6 @@ async function updateData(scInfo) {
 	const player = scInfo.player;
 	const teamName = scInfo.teamName;
 
-	const color = scInfo.color;
 	const score = scInfo.score;
 	const wl = scInfo.wl;
 
@@ -112,21 +110,9 @@ async function updateData(scInfo) {
 	if (bestOfPrev != bestOf) {
 		updateBorder(bestOf, gamemode); // update the border
 		// update the score ticks so they fit the bestOf border
-		updateScore(score[0], bestOf, color[0], 0, gamemode, false);
-		updateScore(score[1], bestOf, color[1], 1, gamemode, false);
+		updateScore(score[0], bestOf, 0, gamemode, false);
+		updateScore(score[1], bestOf, 1, gamemode, false);
 	}
-
-	// things that will happen for each side
-	for (let i = 0; i < maxSides; i++) {
-
-		// change the player background colors
-		if (colorPrev[i] != color[i].name) {
-			updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
-			colorPrev[i] = color[i].name;
-		}
-
-	}
-
 
 	// now, things that will happen only once, when the html loads
 	if (startup) {
@@ -151,20 +137,13 @@ async function updateData(scInfo) {
 					if (gamemode == 1) { //if singles, show player 1 and 2 names
 						pIntroEL.textContent = player[i].name;
 					} else { //if doubles
-						if (teamName[i] == color[i].name + " Team") { //if theres no team name, show player names
-							pIntroEL.textContent = player[i].name + " & " + player[i+2].name;
-						} else { //else, show the team name
-							pIntroEL.textContent = teamName[i];
-						}
+						pIntroEL.textContent = teamName[i];
 					}
 
 					pIntroEL.style.fontSize = introSize; //resize the font to its max size
 					resizeText(pIntroEL); //resize the text if its too large
-
-					//change the color of the player text shadows
-					pIntroEL.style.textShadow = '0px 0px 20px ' + color[i].hex;
 					
-				};
+				}
 
 				//player name fade in
 				fadeInMove(document.getElementById("p1Intro"), introDelay, null, true);
@@ -197,9 +176,6 @@ async function updateData(scInfo) {
 				}
 			}
 
-			document.getElementById('roundIntro').textContent = round;
-			document.getElementById('tNameIntro').textContent = scInfo.tournamentName;
-			
 			//round, tournament and VS/GameX text fade in
 			document.querySelectorAll(".textIntro").forEach(el => {
 				fadeIn(el, introDelay-.2, fadeInTime);
@@ -278,7 +254,7 @@ async function updateData(scInfo) {
 			wlPrev[i] = wl[i];
 
 			//set the current score
-			updateScore(score[i], bestOf, color[i], i, gamemode, false);
+			updateScore(score[i], bestOf, i, gamemode, false);
 			scorePrev[i] = score[i];
 
 			//check if we have a logo we can place on the overlay
@@ -311,8 +287,7 @@ async function updateData(scInfo) {
 			// we need to update some things
 			updateBorder(bestOf, gamemode);
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
-				updateScore(score[i], bestOf, color[i], i, gamemode, false);
+				updateScore(score[i], bestOf, i, gamemode, false);
 			}
 			gamemodePrev = gamemode;
 		}
@@ -416,7 +391,7 @@ async function updateData(scInfo) {
 
 			//score check
 			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, color[i], i, gamemode, true);
+				updateScore(score[i], bestOf, i, gamemode, true);
 				scorePrev[i] = score[i];
 			}
 
@@ -563,26 +538,12 @@ function changeGM(gm) {
 
 
 // update functions
-async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
-
-	if (playAnim) { //do we want to play the score up animation?
-		// depending on the color, change the clip
-		scoreAnim[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${pColor.name}.webm`;
-		scoreAnim[pNum].play();
-	} 
+async function updateScore(pScore, bestOf, pNum, gamemode, playAnim) {
 	// change the score image with the new values
 	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/Bo${bestOf} ${pScore}.png`;
 	// update that score number in case we are using those
 	updateText(scoreNums[pNum], pScore, numSize);
 
-}
-
-function updateColor(colorEL, pColor, gamemode, scoreNum) {
-	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor.name}.png`;
-
-	// change the text shadows for the numerical scores
-	scoreNum.style.webkitTextStroke = "1px " + pColor.hex;
-	scoreNum.style.textShadow = "0px 0px 2px " + pColor.hex;
 }
 
 function updateBorder(bestOf, gamemode) {

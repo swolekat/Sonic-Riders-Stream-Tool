@@ -38,7 +38,7 @@ async function init() {
     
     // we need to set the current char path
     await settings.load();
-    stPath.char = settings.isWsChecked() ? stPath.charWork : stPath.charBase;
+    stPath.char = stPath.charBase;
 
 
     // initialize our player class

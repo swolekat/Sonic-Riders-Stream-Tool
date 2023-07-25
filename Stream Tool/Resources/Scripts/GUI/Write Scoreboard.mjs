@@ -2,7 +2,6 @@ import { bestOf } from './BestOf.mjs';
 import { casters } from './Caster/Casters.mjs';
 import { gamemode } from './Gamemode Change.mjs';
 import { players, playersReady } from './Player/Players.mjs';
-import { round } from './Round.mjs';
 import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
 import { teams } from './Team/Teams.mjs';
@@ -67,19 +66,11 @@ export async function writeScoreboard() {
         ],
         bestOf: bestOf.getBo(),
         gamemode: gamemode.getGm(),
-        round: round.getText(),
         tournamentName: tournament.getText(),
         caster: [],
         allowIntro: settings.isIntroChecked(),
         // this is just for remote updating
-        altSkin: settings.isAltArtChecked(),
-        customRound: settings.isCustomRoundChecked(),
-        forceHD: settings.isHDChecked(),
-        noLoAHD: settings.isNoLoAChecked(),
-        workshop: settings.isWsChecked(),
         forceWL: settings.isForceWLChecked(),
-        roundIndex: round.getIndex(),
-        roundNumber: round.getNumber(),
         id : "gameData"
     };
 

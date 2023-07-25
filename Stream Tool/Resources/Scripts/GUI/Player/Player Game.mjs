@@ -117,12 +117,7 @@ export class PlayerGame extends Player {
         const promises = [];
 
         // determine which folder is going to be used
-        let folder;
-        if (settings.isAltArtChecked() && this.charInfo.scoreboard.alt) {
-            folder = "AltArt";
-        } else {
-            folder = "Skins";
-        }
+        const folder = "Skins";
 
         // get us a valid image
         promises.push(getRecolorImage(
@@ -147,44 +142,10 @@ export class PlayerGame extends Player {
 
     /** Sets the VS Screen image depending on recolors and settings */
     async setVsImg() {
-        if (settings.isHDChecked()) {
-            const promises = [];
-            const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            promises.push(getRecolorImage(this.shader, this.char, {name: skinName}, null, "Skins", this.randomImg));
-            promises.push(this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg));
-            this.vsSkin = {name: skinName};
-            await Promise.all(promises).then( (value) => {
-                this.vsSrc = value[0];
-                this.vsBrowserSrc = value[1];
-            })
-        } else { // if no HD, just use the scoreboard image
-            if (settings.isAltArtChecked() && this.charInfo.scoreboard.alt) {
-                // if the character is using alt art, we need to generate a new image
-                const promises = [];
-                promises.push(getRecolorImage(
-                    this.shader,
-                    this.char,
-                    this.skin,
-                    this.charInfo.colorData,
-                    "Skins",
-                    this.randomImg
-                ));
-                promises.push(this.getBrowserSrc(
-                    this.char, this.skin, "Skins", this.randomImg
-                ));
-
-                // when those finish loading, set the image values
-                await Promise.all(promises).then( (value) => {
-                    this.vsSrc = value[0];
-                    this.vsBrowserSrc = value[1];
-                });
-            } else {
-                // by default, use the scoreboard image
-                this.vsSrc = this.scSrc;
-                this.vsBrowserSrc = this.scBrowserSrc;
-            }
-            this.vsSkin = this.skin;            
-        }
+        // by default, use the scoreboard image
+        this.vsSrc = this.scSrc;
+        this.vsBrowserSrc = this.scBrowserSrc;
+        this.vsSkin = this.skin;
     }
 
     /** Sets the player's VS Screen background video src */
@@ -236,12 +197,7 @@ export class PlayerGame extends Player {
                 scCharPos[0] = charPos.scoreboard[this.skin.name].x;
                 scCharPos[1] = charPos.scoreboard[this.skin.name].y;
                 scCharPos[2] = charPos.scoreboard[this.skin.name].scale;
-            } else if (settings.isAltArtChecked() && charPos.scoreboard.alt) {
-                // for workshop alternative art
-                scCharPos[0] = charPos.scoreboard.alt.x;
-                scCharPos[1] = charPos.scoreboard.alt.y;
-                scCharPos[2] = charPos.scoreboard.alt.scale;
-            } else { // if none of the above, use a default position
+            } else  { // if none of the above, use a default position
                 scCharPos[0] = charPos.scoreboard.neutral.x;
                 scCharPos[1] = charPos.scoreboard.neutral.y;
                 scCharPos[2] = charPos.scoreboard.neutral.scale;
