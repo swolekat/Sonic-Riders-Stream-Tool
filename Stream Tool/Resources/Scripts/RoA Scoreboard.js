@@ -17,7 +17,7 @@ const roundSize = "19px";
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], scorePrev = [], wlPrev = [], topBarMoved = [];
-let bestOfPrev, gamemodePrev;
+let bestOfPrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2;
@@ -96,7 +96,6 @@ async function updateData(scInfo) {
 	const wl = scInfo.wl;
 
 	const bestOf = scInfo.bestOf;
-	const gamemode = scInfo.gamemode;
 
 	const round = scInfo.round;
 
@@ -104,14 +103,14 @@ async function updateData(scInfo) {
 	// first of all, things that will always happen on each cycle
 	
 	// set the max players depending on singles or doubles
-	maxPlayers = gamemode == 1 ? 2 : 4;
+	maxPlayers = 2;
 
 	// change border depending of the Best Of status
 	if (bestOfPrev != bestOf) {
-		updateBorder(bestOf, gamemode); // update the border
+		updateBorder(bestOf); // update the border
 		// update the score ticks so they fit the bestOf border
-		updateScore(score[0], bestOf, 0, gamemode, false);
-		updateScore(score[1], bestOf, 1, gamemode, false);
+		updateScore(score[0], bestOf, 0, false);
+		updateScore(score[1], bestOf, 1, false);
 	}
 
 	// now, things that will happen only once, when the html loads
@@ -134,11 +133,7 @@ async function updateData(scInfo) {
 					const pIntroEL = document.getElementById('p'+(i+1)+'Intro');
 
 					//update players intro text
-					if (gamemode == 1) { //if singles, show player 1 and 2 names
-						pIntroEL.textContent = player[i].name;
-					} else { //if doubles
-						pIntroEL.textContent = teamName[i];
-					}
+					pIntroEL.textContent = player[i].name;
 
 					pIntroEL.style.fontSize = introSize; //resize the font to its max size
 					resizeText(pIntroEL); //resize the text if its too large
@@ -188,14 +183,6 @@ async function updateData(scInfo) {
 			introDelay = 2.5;
 		}
 
-
-		//if this isnt a singles match, rearrange stuff
-		if (gamemode != 1) {
-			changeGM(gamemode);
-		}
-		gamemodePrev = gamemode;
-
-
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [];
 
@@ -203,13 +190,9 @@ async function updateData(scInfo) {
 		for (let i = 0; i < maxPlayers; i++) {
 			
 			//lets start with the player names and tags
-			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
-				const side = (i % 2 == 0) ? true : false; //to know direction
-				fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
-			} else { //if doubles, just fade them in
-				fadeIn(pWrapper[i], introDelay+.15)
-			}
+			updatePlayerName(i, player[i].name, player[i].tag);
+			const side = (i % 2 == 0) ? true : false; //to know direction
+			fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
 
 			// show player pronouns if any
 			updatePronouns(i, player[i].pronouns);
@@ -237,12 +220,6 @@ async function updateData(scInfo) {
 			// to know animation direction
 			const side = (i % 2 == 0) ? true : false;
 
-			//set the team names if not singles
-			if (gamemode != 1) {
-				updateText(teamNames[i], teamName[i], teamSize);
-				fadeInMove(teamNames[i], introDelay, null, side);
-			}
-
 			// fade in move the scoreboards
 			fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
 			
@@ -254,15 +231,11 @@ async function updateData(scInfo) {
 			wlPrev[i] = wl[i];
 
 			//set the current score
-			updateScore(score[i], bestOf, i, gamemode, false);
+			updateScore(score[i], bestOf, i, false);
 			scorePrev[i] = score[i];
 
 			//check if we have a logo we can place on the overlay
-			if (gamemode == 1) { //if this is singles, check the player tag
-				updateLogo(tLogoImg[i], player[i].tag);
-			} else { //if doubles, check the team name
-				updateLogo(tLogoImg[i], teamName[i]);
-			}
+			updateLogo(tLogoImg[i], player[i].tag);
 
 			// fade in the top bar
 			fadeInTopBar(topBars[i], introDelay+.6);
@@ -280,17 +253,6 @@ async function updateData(scInfo) {
 
 	// now things that will happen on all the other cycles
 	else {
-
-		//of course, check if the gamemode has changed
-		if (gamemodePrev != gamemode) {
-			changeGM(gamemode);
-			// we need to update some things
-			updateBorder(bestOf, gamemode);
-			for (let i = 0; i < maxSides; i++) {
-				updateScore(score[i], bestOf, i, gamemode, false);
-			}
-			gamemodePrev = gamemode;
-		}
 		
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [], animsEnded = [];
@@ -304,20 +266,13 @@ async function updateData(scInfo) {
 				const side = (i % 2 == 0) ? true : false;
 
 				//if this is singles, move the texts while updating
-				if (gamemode == 1) {
-					//move and fade out the player 1's text
-					fadeOutMove(pWrapper[i], null, side).then( () => {
-						//now that nobody is seeing it, quick, change the text's content!
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						//fade the name back in with a sick movement
-						fadeInMove(pWrapper[i], 0, null, side);
-					});
-				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i]).then( () => {
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						fadeIn(pWrapper[i]);
-					}); 
-				}
+				//move and fade out the player 1's text
+				fadeOutMove(pWrapper[i], null, side).then( () => {
+					//now that nobody is seeing it, quick, change the text's content!
+					updatePlayerName(i, player[i].name, player[i].tag);
+					//fade the name back in with a sick movement
+					fadeInMove(pWrapper[i], 0, null, side);
+				});
 				
 			}
 
@@ -355,19 +310,6 @@ async function updateData(scInfo) {
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
 
-			//check if the team names changed
-			if (gamemode != 1) {
-
-				const side = (i % 2 == 0) ? true : false;
-
-				if (teamNames[i].textContent != teamName[i]) {
-					fadeOutMove(teamNames[i], null, side).then( () => {
-						updateText(teamNames[i], teamName[i], teamSize);
-						fadeInMove(teamNames[i], 0, null, side);
-					});
-				}
-			}
-			
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
 				//move it away!
@@ -391,28 +333,17 @@ async function updateData(scInfo) {
 
 			//score check
 			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, i, gamemode, true);
+				updateScore(score[i], bestOf, i, true);
 				scorePrev[i] = score[i];
 			}
 
 			//check if we have a logo we can place on the overlay
-			if (gamemode == 1) { //if this is singles, check the player tag
-				if (pTag[i].textContent != player[i].tag) {
-					fadeOut(tLogoImg[i]).then( () => {
-						updateLogo(tLogoImg[i], player[i].tag);
-						fadeIn(tLogoImg[i]);
-					});
-				}
-			} else { //if doubles, check the team name
-				if (teamNames[i].textContent != teamName[i]) {
-					fadeOut(tLogoImg[i]).then( () => {
-						updateLogo(tLogoImg[i], teamName[i]);
-						fadeIn(tLogoImg[i]);
-					});
-				}
+			if (pTag[i].textContent != player[i].tag) {
+				fadeOut(tLogoImg[i]).then( () => {
+					updateLogo(tLogoImg[i], player[i].tag);
+					fadeIn(tLogoImg[i]);
+				});
 			}
-
-
 		}
 		
 		//and finally, update the round text
@@ -432,137 +363,30 @@ async function updateData(scInfo) {
 	}
 }
 
-
-// the gamemode manager
-function changeGM(gm) {
-			
-	if (gm == 2) {
-
-		// move the scoreboard to the new positions
-		const r = document.querySelector(':root');
-		r.style.setProperty("--scoreboardX", "15px");
-		r.style.setProperty("--scoreboardY", "13px");
-
-		// add new positions for the character images
-		charImg[0].parentElement.parentElement.classList.add("charTop");
-		charImg[1].parentElement.parentElement.classList.add("charTop");
-
-		//change the positions for the player texts
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersSingles");
-			pWrapper[i].classList.add("wrappersDubs");
-			//update the text size and resize it if it overflows
-			pName[i].style.fontSize = nameSizeDubs;
-			pTag[i].style.fontSize = tagSizeDubs;
-			resizeText(pWrapper[i]);
-		}
-		pWrapper[0].style.left = "257px";
-		pWrapper[1].style.right = "257px";
-
-		// move the pronouns / [W]/[L] top bars
-		topBars[0].parentElement.parentElement.style.width = "285px";
-		topBars[1].parentElement.parentElement.style.width = "285px";
-		topBars[0].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[1].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[0].parentElement.parentElement.style.justifyContent = "center";
-		topBars[1].parentElement.parentElement.style.justifyContent = "center";
-
-		// move the team logos
-		tLogoImg[0].style.left = "352px";
-		tLogoImg[0].style.top = "65px";
-		tLogoImg[1].style.right = "352px";
-		tLogoImg[1].style.top = "65px";
-
-		// move the score numbers
-		scoreNums[0].style.left = "225px";
-		scoreNums[1].style.left = "225px";
-		scoreNums[0].style.top = "23px";
-		scoreNums[1].style.top = "23px";
-		numSize = "30px";
-
-		//show all hidden elements
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "block";
-		}
-
-	} else {
-
-		const r = document.querySelector(':root');
-		r.style.setProperty("--scoreboardX", "470px");
-		r.style.setProperty("--scoreboardY", "25px");
-
-		charImg[0].parentElement.parentElement.classList.remove("charTop");
-		charImg[1].parentElement.parentElement.classList.remove("charTop");
-
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersDubs");
-			pWrapper[i].classList.add("wrappersSingles");
-			pName[i].style.fontSize = nameSize;
-			pTag[i].style.fontSize = tagSize;
-			resizeText(pWrapper[i]);
-		}
-		pWrapper[0].style.left = "38px";
-		pWrapper[1].style.right = "38px";
-
-		topBars[0].parentElement.parentElement.style.width = "380px";
-		topBars[1].parentElement.parentElement.style.width = "380px";
-		topBars[0].parentElement.parentElement.style.transform = "";
-		topBars[1].parentElement.parentElement.style.transform = "";
-		topBars[0].parentElement.parentElement.style.justifyContent = "";
-		topBars[1].parentElement.parentElement.style.justifyContent = "";
-
-		tLogoImg[0].style.left = "248px";
-		tLogoImg[0].style.top = "33px";
-		tLogoImg[1].style.right = "248px";
-		tLogoImg[1].style.top = "33px";
-
-		scoreNums[0].style.left = "-12px";
-		scoreNums[1].style.left = "-12px";
-		scoreNums[0].style.top = "27px";
-		scoreNums[1].style.top = "27px";
-		numSize = "36px";
-
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "none";
-		}
-		
-	}
-
-	// update the background images
-	document.getElementById("bgL").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
-	document.getElementById("bgR").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
-
-}
-
-
 // update functions
-async function updateScore(pScore, bestOf, pNum, gamemode, playAnim) {
+async function updateScore(pScore, bestOf, pNum) {
 	// change the score image with the new values
-	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/Bo${bestOf} ${pScore}.png`;
+	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/1/Bo${bestOf} ${pScore}.png`;
 	// update that score number in case we are using those
 	updateText(scoreNums[pNum], pScore, numSize);
 
 }
 
-function updateBorder(bestOf, gamemode) {
+function updateBorder(bestOf) {
 	for (let i = 0; i < borderImg.length; i++) {
-		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} Bo${bestOf}.png`;
+		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border 1 Bo${bestOf}.png`;
 		if (bestOf == "X") {
 			scoreNums[i].style.display = "flex";
 			
 		} else {
 			scoreNums[i].style.display = "none";
 		}
-		if (bestOf == "X" && gamemode == 1) {
+		if (bestOf == "X") {
 			borderImg[i].style.transform = "translateX(-26px)";
 			topBars[i].parentElement.parentElement.style.transform = "translateX(-26px)";
 		} else {
 			borderImg[i].style.transform = "translateX(0px)";
-			if (gamemode == 1) {
-				topBars[i].parentElement.parentElement.style.transform = "translateX(0px)";
-			}
+			topBars[i].parentElement.parentElement.style.transform = "translateX(0px)";
 		}
 	}
 	bestOfPrev = bestOf
@@ -572,14 +396,9 @@ function updateLogo(logoEL, nameLogo) {
 	logoEL.src = `Resources/Logos/${nameLogo}.png`;
 }
 
-function updatePlayerName(pNum, name, tag, gamemode) {
-	if (gamemode == 2) {
-		pName[pNum].style.fontSize = nameSizeDubs; //set original text size
-		pTag[pNum].style.fontSize = tagSizeDubs;
-	} else {
-		pName[pNum].style.fontSize = nameSize;
-		pTag[pNum].style.fontSize = tagSize;
-	}
+function updatePlayerName(pNum, name, tag) {
+	pName[pNum].style.fontSize = nameSize;
+	pTag[pNum].style.fontSize = tagSize;
 	pName[pNum].textContent = name; //change the actual text
 	pTag[pNum].textContent = tag;
 	resizeText(pWrapper[pNum]); //resize if it overflows

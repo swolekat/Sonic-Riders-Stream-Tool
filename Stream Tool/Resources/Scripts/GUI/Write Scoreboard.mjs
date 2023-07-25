@@ -1,6 +1,5 @@
 import { bestOf } from './BestOf.mjs';
 import { casters } from './Caster/Casters.mjs';
-import { gamemode } from './Gamemode Change.mjs';
 import { players, playersReady } from './Player/Players.mjs';
 import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
@@ -65,7 +64,6 @@ export async function writeScoreboard() {
             wl.getRight(),
         ],
         bestOf: bestOf.getBo(),
-        gamemode: gamemode.getGm(),
         tournamentName: tournament.getText(),
         caster: [],
         allowIntro: settings.isIntroChecked(),

@@ -1,10 +1,8 @@
 import { viewport } from "./Viewport.mjs";
-import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Player/Players.mjs";
 import { wl } from "./WinnersLosers.mjs";
 import { inside, stPath } from "./Globals.mjs";
 import { getJson, saveJson } from "./File System.mjs";
-import { gamemode } from "./Gamemode Change.mjs";
 import { tournament } from "./Tournament.mjs";
 import { teams } from "./Team/Teams.mjs";
 
@@ -153,19 +151,14 @@ class GuiSettings {
         // initialize the string
         let copiedText = tournament.getText() + " - " + round.getText() + " - ";
 
-        if (gamemode.getGm() == 1) { // for singles matches
-            // check if the player has a tag to add
-            if (players[0].tag) {
-                copiedText += players[0].tag + " | ";
-            }
-            copiedText += players[0].getName() + " (" + players[0].char +") VS ";
-            if (players[1].tag) {
-                copiedText += players[1].tag + " | ";
-            }
-            copiedText += players[1].getName() + " (" +  players[1].char +")";
-        } else { // for team matches
-            copiedText += teams[0].getName() + " VS " + teams[1].getName();
+        if (players[0].tag) {
+            copiedText += players[0].tag + " | ";
         }
+        copiedText += players[0].getName() + " (" + players[0].char +") VS ";
+        if (players[1].tag) {
+            copiedText += players[1].tag + " | ";
+        }
+        copiedText += players[1].getName() + " (" +  players[1].char +")";
 
         // send the string to the user's clipboard
         navigator.clipboard.writeText(copiedText);

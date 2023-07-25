@@ -1,11 +1,10 @@
 import { Player } from "./Player.mjs";
 import { fileExists } from "../File System.mjs";
-import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
+import { getRecolorImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { settings } from "../Settings.mjs";
 import { playerInfo } from "./Player Info.mjs";
 import { stPath } from "../Globals.mjs";
-import { gamemode } from "../Gamemode Change.mjs";
 
 export class PlayerGame extends Player {
 
@@ -238,11 +237,7 @@ export class PlayerGame extends Player {
                 vsCharPos[0] = -475;
             }
             //if doubles, we need to move it up a bit
-            if (gamemode.getGm() == 2) {
-                vsCharPos[1] = -125;
-            } else {
-                vsCharPos[1] = 0;
-            }
+            vsCharPos[1] = 0;
             vsCharPos[2] = .8;
         }
         return vsCharPos;

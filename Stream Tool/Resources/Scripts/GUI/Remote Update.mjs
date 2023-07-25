@@ -1,7 +1,6 @@
 import { bestOf } from "./BestOf.mjs";
 import { casters } from "./Caster/Casters.mjs";
 import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
-import { gamemode } from "./Gamemode Change.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { players } from "./Player/Players.mjs";
 import { scores } from "./Score/Scores.mjs";
@@ -17,9 +16,6 @@ import { wl } from "./WinnersLosers.mjs";
 export async function updateGUI(data) {
 
     // set the gamemode and scoremode
-    if (data.gamemode != gamemode.getGm) {
-        gamemode.changeGamemode(data.gamemode);
-    }
     if (data.bestOf != bestOf.getBo) {
         bestOf.setBo(data.bestOf);
     }
