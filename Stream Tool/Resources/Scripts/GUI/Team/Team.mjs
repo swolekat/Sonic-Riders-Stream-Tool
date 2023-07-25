@@ -1,5 +1,3 @@
-import { currentColors } from "../Colors.mjs";
-
 export class Team {
 
     #tNameInp;
@@ -16,12 +14,7 @@ export class Team {
         return this.#tNameInp.value;
     }
     setName(text) {
-        // dont set anything if this is just [Color] Team
-        if (text == currentColors[this.#num - 1].name + " Team") {
-            this.#tNameInp.value = "";
-        } else {
-            this.#tNameInp.value = text;
-        }
+        this.#tNameInp.value = "";
     }
     getNameInp() {
         return this.#tNameInp;

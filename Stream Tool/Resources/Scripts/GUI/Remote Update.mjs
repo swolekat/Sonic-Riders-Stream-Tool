@@ -1,6 +1,5 @@
 import { bestOf } from "./BestOf.mjs";
 import { casters } from "./Caster/Casters.mjs";
-import { currentColors, updateColor } from "./Colors.mjs";
 import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
 import { displayNotif } from "./Notifications.mjs";
@@ -79,9 +78,6 @@ export async function updateGUI(data) {
 
     // stuff for each side
     for (let i = 0; i < 2; i++) {
-        if (currentColors[i].name != data.color[i].name) {
-            await updateColor(i, data.color[i]);
-        }
         scores[i].setScore(data.score[i]);
         teams[i].setName(data.teamName[i]);
     }

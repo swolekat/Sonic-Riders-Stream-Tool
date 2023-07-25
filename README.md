@@ -5,7 +5,12 @@
   
 </p>
 
-<h1 align="center">RoA Stream Tool</h1>
+<h1 align="center">Sonic Riders Stream Tool</h1>
+
+
+<h1>HEY THIS WAS REALLY RUSHED TOGETHER FOR A TOURNAMENT IN TWO DAYS. PROBABLY TONS OF FEATURES MISSING AND STUFF MIGHT BE BROKEN.</h1>
+
+
 
 So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day, because I have done tons of work so you don’t have to! With this tool, you will be able to set up a RoA tournament stream in no time.
 

@@ -2,7 +2,6 @@ import { Player } from "./Player.mjs";
 import { fileExists } from "../File System.mjs";
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
-import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
 import { playerInfo } from "./Player Info.mjs";
 import { stPath } from "../Globals.mjs";
@@ -98,9 +97,6 @@ export class PlayerGame extends Player {
         await this.setVsImg();
         // update the VS BG based on the vs img
         await this.setVsBg();
-        // set up a trail for the vs screen
-        await this.setTrailImage();
-
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
@@ -225,12 +221,6 @@ export class PlayerGame extends Player {
             }
         }
 
-    }
-
-    /** Generates a new trail image for this player */
-    async setTrailImage() {
-        const color = currentColors[(this.pNum-1)%2].hex.substring(1);
-        this.trailSrc = await getTrailImage(this.shader, this.char, this.vsSkin.name, color);
     }
 
     /**

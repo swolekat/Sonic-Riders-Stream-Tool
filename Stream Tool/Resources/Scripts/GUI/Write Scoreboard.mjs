@@ -1,6 +1,5 @@
 import { bestOf } from './BestOf.mjs';
 import { casters } from './Caster/Casters.mjs';
-import { currentColors } from './Colors.mjs';
 import { gamemode } from './Gamemode Change.mjs';
 import { players, playersReady } from './Player/Players.mjs';
 import { round } from './Round.mjs';
@@ -113,19 +112,6 @@ export async function writeScoreboard() {
             customImg: players[i].customImg
         })
 
-    }
-
-    // stuff that needs to be done for both sides
-    for (let i = 0; i < 2; i++) {
-        // add color info
-        scoreboardJson.color.push({
-            name: currentColors[i].name,
-            hex: currentColors[i].hex
-        });
-        // if the team inputs dont have anything, display as [Color Team]
-        if (!teams[i].getName()) {
-            scoreboardJson.teamName[i] = `${currentColors[i].name} Team`
-        }
     }
 
     // do the same for the casters

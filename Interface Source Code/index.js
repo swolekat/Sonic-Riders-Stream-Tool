@@ -9,7 +9,7 @@ if (process.platform == "win32") { // if on Windows
     resourcesPath = path.resolve('.', 'Resources');
 }
 // if using npm/yarn start
-/* resourcesPath = path.resolve('..', 'Stream Tool', 'Resources') */
+// resourcesPath = path.resolve('..', 'Stream Tool', 'Resources')
 
 loadExecFile();
 async function loadExecFile() {
