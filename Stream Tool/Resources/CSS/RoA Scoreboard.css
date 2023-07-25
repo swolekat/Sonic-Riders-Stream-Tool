@@ -97,18 +97,6 @@ body {
 .flipBack {
     transform: scaleX(-1);
 }
-#p1Wrapper {
-    left: 38px;
-}
-#p2Wrapper {
-    right: 38px;
-}
-#p3Wrapper {
-    left: 106px;
-}
-#p4Wrapper {
-    right: 106px;
-}
 
 .tags {
     color: lightgray;
@@ -278,6 +266,7 @@ body {
 }
 
 #overlayIntro {
+    display: none;
     opacity: 0;
 }
 
@@ -365,4 +354,108 @@ body {
 @keyframes wlMoveIn {
     from {transform: translateY(20px)}
     to {transform: translateY(0)}
+}
+
+:root {
+    --scoreboard-padding: 20px;
+}
+
+.player-card {
+    position: absolute;
+    top: var(--scoreboard-padding);
+    width: 300px;
+    border: 10px solid #fff;
+}
+
+.player-card-content {
+    position: relative;
+}
+
+.player-card.left {
+    left: var(--scoreboard-padding);
+}
+
+.player-card.right {
+    right: var(--scoreboard-padding);
+}
+
+
+.charachter-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+}
+
+.player-info {
+    padding: 10px 0;
+    background: #fff;
+    color: #000;
+    text-align: center;
+}
+
+
+
+.score {
+    position: absolute;
+    top: -10px;
+    left: calc(100% + 10px);
+    width: 30px;
+    background: white;
+    height: 200px;
+    text-align: center;
+    padding: 10px;
+}
+
+.player-card.right .score {
+    left: auto;
+    right: calc(100% + 10px);
+}
+
+.score-markers {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 10px;
+}
+
+.score-markers.hidden {
+    display: none;
+}
+
+.score-markers.bo3 .score-marker:last-child {
+    display: none;
+}
+
+.score-markers.score-1 .score-marker:first-child {
+    background: #2ba4eb;
+}
+
+.score-markers.score-2 .score-marker:first-child {
+    background: #2ba4eb;
+}
+
+.score-markers.score-2 .score-marker:nth-child(2) {
+    background: #2ba4eb;
+}
+
+.score-markers.score-3 .score-marker:first-child {
+    background: #2ba4eb;
+}
+
+.score-markers.score-3 .score-marker:nth-child(2) {
+    background: #2ba4eb;
+}
+
+.score-markers.score-3 .score-marker:nth-child(3) {
+    background: #2ba4eb;
+}
+
+.score-marker {
+    width: 100%;
+    flex-grow: 1;
+    background: #2f2f2f;
+}
+
+.scoreNum.hidden {
+    display:none;
 }

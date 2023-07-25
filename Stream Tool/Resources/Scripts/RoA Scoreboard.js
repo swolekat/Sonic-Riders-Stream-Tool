@@ -9,9 +9,6 @@ let introDelay = .5; //all animations will get this delay when the html loads (u
 const introSize = "85px";
 const nameSize = "24px";
 const tagSize = "17px";
-const nameSizeDubs = "22px";
-const tagSizeDubs = "15px";
-const teamSize = "22px";
 let numSize = "36px"
 const roundSize = "19px";
 
@@ -31,13 +28,13 @@ let startup = true;
 
 //next, global variables for the html elements
 const scoreboard = document.getElementsByClassName("scoreboard");
-const teamNames = document.getElementsByClassName("teamName");
 const topBars = document.getElementsByClassName("topBarTexts");
 const wlText = document.getElementsByClassName("wlText");
-const scoreImg = document.getElementsByClassName("scoreImgs");
+const scoreImg = [
+	document.getElementById('p1Score'),
+	document.getElementById('p2Score'),
+];
 const scoreNums = document.getElementsByClassName("scoreNum");
-const scoreAnim = document.getElementsByClassName("scoreVid");
-const tLogoImg = document.getElementsByClassName("tLogos");
 const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
@@ -195,8 +192,8 @@ async function updateData(scInfo) {
 			fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
 
 			// show player pronouns if any
-			updatePronouns(i, player[i].pronouns);
-			displayTopBarElement(pProns[i]);
+			// updatePronouns(i, player[i].pronouns);
+			// displayTopBarElement(pProns[i]);
 
 			//set the character image for the player
 			charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
@@ -221,11 +218,11 @@ async function updateData(scInfo) {
 			const side = (i % 2 == 0) ? true : false;
 
 			// fade in move the scoreboards
-			fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
+			// fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
-			updateWL(wl[i], i);
-			displayTopBarElement(wlText[i]);
+			// updateWL(wl[i], i);
+			// displayTopBarElement(wlText[i]);
 			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
@@ -234,11 +231,8 @@ async function updateData(scInfo) {
 			updateScore(score[i], bestOf, i, false);
 			scorePrev[i] = score[i];
 
-			//check if we have a logo we can place on the overlay
-			updateLogo(tLogoImg[i], player[i].tag);
-
 			// fade in the top bar
-			fadeInTopBar(topBars[i], introDelay+.6);
+			// fadeInTopBar(topBars[i], introDelay+.6);
 			
 		}
 
@@ -277,13 +271,13 @@ async function updateData(scInfo) {
 			}
 
 			// show player pronouns if any
-			if (player[i].pronouns != pProns[i].textContent) {
-				topBarMoved[i % 2] = true;
-				fadeOutTopBar(topBars[i % 2]).then( () => {
-					updatePronouns(i, player[i].pronouns);
-					displayTopBarElement(pProns[i]);
-				});
-			}
+			// if (player[i].pronouns != pProns[i].textContent) {
+			// 	topBarMoved[i % 2] = true;
+			// 	fadeOutTopBar(topBars[i % 2]).then( () => {
+			// 		// updatePronouns(i, player[i].pronouns);
+			// 		// displayTopBarElement(pProns[i]);
+			// 	});
+			// }
 
 			//player characters and skins
 			if (pCharPrev[i] != player[i].sc.charImg) {
@@ -315,8 +309,8 @@ async function updateData(scInfo) {
 				//move it away!
 				fadeOutTopBar(topBars[i]).then( () => {
 					//change the thing!
-					updateWL(wl[i], i);
-					displayTopBarElement(wlText[i]);
+					// updateWL(wl[i], i);
+					// displayTopBarElement(wlText[i]);
 				});
 				wlPrev[i] = wl[i];
 				topBarMoved[i] = true;
@@ -326,7 +320,7 @@ async function updateData(scInfo) {
 			if (topBarMoved[i]) {
 				setTimeout(() => {
 					// move it back up!
-					fadeInTopBar(topBars[i]);
+					// fadeInTopBar(topBars[i]);
 					topBarMoved[i] = false;
 				}, 500);
 			}
@@ -335,14 +329,6 @@ async function updateData(scInfo) {
 			if (scorePrev[i] != score[i]) {
 				updateScore(score[i], bestOf, i, true);
 				scorePrev[i] = score[i];
-			}
-
-			//check if we have a logo we can place on the overlay
-			if (pTag[i].textContent != player[i].tag) {
-				fadeOut(tLogoImg[i]).then( () => {
-					updateLogo(tLogoImg[i], player[i].tag);
-					fadeIn(tLogoImg[i]);
-				});
 			}
 		}
 		
@@ -365,11 +351,15 @@ async function updateData(scInfo) {
 
 // update functions
 async function updateScore(pScore, bestOf, pNum) {
+	if(!scoreImg[pNum]){
+		return;
+	}
 	// change the score image with the new values
-	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/1/Bo${bestOf} ${pScore}.png`;
+	scoreImg[pNum].className = `score-markers ${bestOf === 'X' ? 'hidden' : ''} bo${bestOf} score-${pScore}`;
+	scoreNums[pNum].className = bestOf === 'X' ? 'scoreNum' : 'scoreNum hidden';
+
 	// update that score number in case we are using those
 	updateText(scoreNums[pNum], pScore, numSize);
-
 }
 
 function updateBorder(bestOf) {
@@ -390,10 +380,6 @@ function updateBorder(bestOf) {
 		}
 	}
 	bestOfPrev = bestOf
-}
-
-function updateLogo(logoEL, nameLogo) {
-	logoEL.src = `Resources/Logos/${nameLogo}.png`;
 }
 
 function updatePlayerName(pNum, name, tag) {
@@ -532,7 +518,7 @@ async function updateChar(charSrc, charPos, pNum) {
 	charImg[pNum].src = charSrc;
 
 	// position the character
-	charImg[pNum].style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
+	// charImg[pNum].style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	// this will make the thing wait till the image is fully loaded
 	await charImg[pNum].decode();
