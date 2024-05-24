@@ -7,7 +7,7 @@ let introDelay = .5; //all animations will get this delay when the html loads (u
 
 //max text sizes (used when resizing back)
 const introSize = "85px";
-const nameSize = "24px";
+const nameSize = "32px";
 const tagSize = "17px";
 let numSize = "36px"
 const roundSize = "19px";

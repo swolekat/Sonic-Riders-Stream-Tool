@@ -8,9 +8,17 @@
     <link rel="stylesheet" href="Resources/CSS/RoA Scoreboard Custom.css">
 </head>
 
-<body>
-    <div class="player-card left">
+<body style="background: #000">
+    <div class="player-card top">
         <div class="player-card-content">
+            <div class="score">
+                <span class="scoreNum"></span>
+                <div id="p1Score" class="score-markers">
+                    <div class="score-marker"></div>
+                    <div class="score-marker"></div>
+                    <div class="score-marker"></div>
+                </div>
+            </div>
             <div class="image-and-info">
                 <div class="charachter-image">
                     <div id="p1CharaMask" >
@@ -26,19 +34,19 @@
                     </span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="player-card bottom">
+        <div class="player-card-content">
             <div class="score">
                 <span class="scoreNum"></span>
-                <div id="p1Score" class="score-markers">
+                <div id="p2Score" class="score-markers">
                     <div class="score-marker"></div>
                     <div class="score-marker"></div>
                     <div class="score-marker"></div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="player-card right">
-        <div class="player-card-content">
             <div class="image-and-info">
                 <div class="charachter-image">
                     <div id="p2CharaMask" >
@@ -52,14 +60,6 @@
                         <span id="p2Tag" class="tags"></span>
                         <span id="p2Name" class="names"></span>
                     </span>
-                </div>
-            </div>
-            <div class="score">
-                <span class="scoreNum"></span>
-                <div id="p2Score" class="score-markers">
-                    <div class="score-marker"></div>
-                    <div class="score-marker"></div>
-                    <div class="score-marker"></div>
                 </div>
             </div>
         </div>
